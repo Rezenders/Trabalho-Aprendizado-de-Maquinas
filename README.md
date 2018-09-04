@@ -8,14 +8,16 @@ Install nltk (https://www.nltk.org/install.html#)
 
 After installing nltk download nltk data:
 
-Run python
-```$python```
+Run python:
+
+```$ python```
 
 Download nltk data
 
-``` import nltk
-	nltk.download('stopwords')
-	nltk.download('punkt')
+``` 
+import nltk
+nltk.download('stopwords')
+nltk.download('punkt')
 ```
 
 
