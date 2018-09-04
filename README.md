@@ -9,7 +9,7 @@ Install nltk (https://www.nltk.org/install.html#)
 After installing nltk download nltk data:
 
 Run python
-```$python``
+```$python```
 
 Download nltk data
 
