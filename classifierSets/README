@@ -1,0 +1,14 @@
+Abordagem 70/30 para divisão dos dados:
+	70% training data
+	30% test data
+
+
+		Trainning	Test
+
+course		649		281
+department	128		54
+faculty		784		340
+other		2633		1131
+project		351		153
+staff		94		43
+student		1147		494

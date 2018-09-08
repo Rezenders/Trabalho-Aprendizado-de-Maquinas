@@ -1,0 +1,97 @@
+
+cs  interactive software systems
+
+
+introduction
+
+the purpose of this course is to student techniques for creating graphical user
+interfaces this course will cover the basic concepts of windowing systems
+interactive drawing user interface management systems and basic concepts of
+user interface design
+
+course structure
+
+
+	instructor dan r olsen
+		jr
+	office  tmcb
+	phone 
+	class time  mw   tmcb
+	office hours upon request
+	email olsencsbyuedu 
+	ta michael r bastian
+
+ways to get help
+please try them in this order
+
+	check the news group and post
+		your question there
+	email to the ta or 
+		instructor
+	call instructor for an appointment 
+
+text
+
+	user interface management systems
+	cs packet at the book store
+ 	nic 
+		documentation
+
+computers
+silicon graphics indys running c in  tmcb
+user interface software  nic
+course philosophy
+the goal of a graduate education is not so much the actual content that you learn but rather that you learn how to learn new things on your own this course will consist of much less lecture time than most courses instead reading and problems will be assigned before each class period class members should have already read and understood the material before class students will be asked in class to present short portions of the material class participation will be graded as discussed below formation of study groups to prepare for class is recommended
+grading
+
+	exams 
+		
+		 tests  each
+		final exam 
+		
+	programs 
+	class participation 
+		
+		students will be regularly asked to present or discuss reading 
+			materials in class grading will be on whether or not you
+			have prepared and thought carefully about the material grading
+			is based on prepared or unprepared not right or wrong 
+			missunderstandings of the material can be corrected by class
+			discussions and will not be counted against you
+		
+
+course calander
+
+sept   class introduction
+sept   notes  chapter   intro
+sept   notes  chapter   events
+sept   nic event model program  assigned
+sept   notes  chapter   functional model
+sept   notes  chapter   functional model
+sept   notes  chapter   interaction 
+oct   notes  chapter   interactionprogram  due
+oct   nic widgets program  assigned
+oct   review for exam
+oct   exam 
+oct   notes  chapter   geometry
+oct   notes  chapter   geometry
+oct   notes  chapter   geometry
+oct   book  chapter   tools 
+oct   book  chapter   uims architecture
+nov   book  chapter   state machines 
+nov    nic script program  dueprogram  assigned
+nov   review for exam
+nov  book  chapter   production systems
+nov   uist exam 
+nov   book  chapter   production systems
+nov   no class
+nov   book  chapter   languagebased uims
+nov   book  chapter   constraints
+dec   book  chapter   constraints
+dec   book  chapter   editing dialogs
+dec   book  chapter   interface quality program  due
+dec   review for final exam
+dec  final exam  pm
+
+
+
