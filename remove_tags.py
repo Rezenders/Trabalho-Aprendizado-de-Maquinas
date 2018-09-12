@@ -19,7 +19,7 @@ def remove_html_tags(raw_html):
 # @param file_path path of a html file
 # @returns string without html tags
 def remove_tags_from_file(file_path):
-    with open(Path(file_path)) as open_file:
+    with open(file_path) as open_file:
         return remove_html_tags(open_file.read())
 
 # Removes all the stopwords contained in the text passed
