@@ -6,18 +6,16 @@ import remove_tags
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectPercentile, f_classif
 from nltk.stem.porter import PorterStemmer
+
 import numpy as np
 from collections import OrderedDict
 from operator import itemgetter
 from itertools import islice
 from collections import defaultdict
 
-path = "./classifierSets/trainning"
-token_dict = {}
-
 # Funcao que faz a quebra do texto em palavras para posterior contagem
 # Ela e passada para a biblioteca TfidfVectorizer.
-# Notem que ela tambem ja faz o processo de stemming. 
+# Notem que ela tambem ja faz o processo de stemming.
 def tokenize(text):
     tokens = nltk.word_tokenize(text)
     stems = []
@@ -25,24 +23,27 @@ def tokenize(text):
         stems.append(PorterStemmer().stem(item))
     return stems
 
-# Aqui para cada arquivo: remove tags, coloca o texto em lower case, 
-# elimina pontuacoes, numerais e caracteres que nao unicode.
-counter = 0
-for dirpath, dirs, files in os.walk(path):
-    for f in files:
-        fname = os.path.join(dirpath, f)
-        counter = counter + 1
-        with open(fname) as pearl:
-            text = pearl.read()
-            text = remove_tags.remove_html_tags(text)
-            text = text.translate(None, string.punctuation)
-            text = text.translate(None, '0123456789')
-            text = unicode(text, errors='replace')
-            token_dict[counter] = text.lower()
+# Removes html tags, ponctuations, numbers, non-unicode chars and lowers case
+# @param file_path html_path
+def token_from_file(file_path):
+    text = remove_tags.remove_tags_from_file(file_path)
+    text = text.translate(None, string.punctuation)
+    text = text.translate(None, '0123456789')
+    text = unicode(text, errors='replace')
+    return text.lower()
 
-# Calcula o TF*IDF com base no documento test.txt
-tfidf = TfidfVectorizer(tokenizer=tokenize, stop_words='english')
-tfidf_matrix = tfidf.fit_transform(token_dict.values())
+# Call token_from_file in all files in trainning_path
+# @param trainning_path path containing training set
+def token_dict_from_dir(trainning_path):
+    counter = 0
+    token_dict = {}
+    for dirpath, dirs, files in os.walk(trainning_path):
+        for f in files:
+            fname = os.path.join(dirpath, f)
+            counter = counter + 1
+            token_dict[counter] = token_from_file(fname)
+
+    return token_dict
 
 # Esta e uma classe que faz a selecao dos 10% termos mais
 # promissores com base em uma f-measure. Fiz uns testes
@@ -55,8 +56,6 @@ tfidf_matrix = tfidf.fit_transform(token_dict.values())
 # columns_with_support = columns[support]
 # print support
 
-# Recupera o nome dos tokes utilizados no calculo do TF*IDF
-feature_names = tfidf.get_feature_names()
 
 # Abordagem 2, selectiona os n primeiros termos e cria um set.
 # best_features_bag = [ ]
@@ -106,31 +105,47 @@ def select_best_features(tfidf_matrix, feature_names, classBounds):
     best_features_dict = OrderedDict(islice(best_features_dict.iteritems(),0,50))
     print best_features_dict
 
-# Calcula lista de features por classe.
-print "Course"
-select_best_features(tfidf_matrix, feature_names, range(0, 649))
-print ""
 
-print "Department"
-select_best_features(tfidf_matrix, feature_names, range(649, 777))
-print ""
+def main():
+    trainning_path = "./classifierSets/trainning"
+    token_dict = token_dict_from_dir(trainning_path)
 
-print "Faculty"
-select_best_features(tfidf_matrix, feature_names, range(777, 1561))
-print ""
+    # Calcula o TF*IDF com base no documento test.txt
+    tfidf = TfidfVectorizer(tokenizer=tokenize, stop_words='english')
+    tfidf_matrix = tfidf.fit_transform(token_dict.values())
 
-print "Other"
-select_best_features(tfidf_matrix, feature_names, range(1581, 4194))
-print ""
+    # Recupera o nome dos tokes utilizados no calculo do TF*IDF
+    feature_names = tfidf.get_feature_names()
 
-print "Project"
-select_best_features(tfidf_matrix, feature_names, range(4194, 4545))
-print ""
 
-print "Staff"
-select_best_features(tfidf_matrix, feature_names, range(4545, 4639))
+    # Calcula lista de features por classe.
+    print "Course"
+    select_best_features(tfidf_matrix, feature_names, range(0, 649))
+    print ""
 
-print "Student"
-select_best_features(tfidf_matrix, feature_names, range(4639, 5786))
-print ""
+    print "Department"
+    select_best_features(tfidf_matrix, feature_names, range(649, 777))
+    print ""
 
+    print "Faculty"
+    select_best_features(tfidf_matrix, feature_names, range(777, 1561))
+    print ""
+
+    print "Other"
+    select_best_features(tfidf_matrix, feature_names, range(1581, 4194))
+    print ""
+
+    print "Project"
+    select_best_features(tfidf_matrix, feature_names, range(4194, 4545))
+    print ""
+
+    print "Staff"
+    select_best_features(tfidf_matrix, feature_names, range(4545, 4639))
+    print ""
+
+    print "Student"
+    select_best_features(tfidf_matrix, feature_names, range(4639, 5786))
+    print ""
+
+if __name__ == "__main__":
+    main()
