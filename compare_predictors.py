@@ -40,12 +40,18 @@ def compare_predictors(predictors, csv_file_location, used_features, predicting_
 
         predictions = predictor.predict(test_set[used_features])
 
-        #calculate error
-        #for i in range(len(class_labels)):
-        #test_set[test_set[predicting_feature_as_int_column] == i]
-        performance = float(1) - (test_set[predicting_feature_as_int_column] != predictions).sum()/float(test_set.shape[0])
-        errors[name] = performance
+        test_set.loc[:,name + ".prediction"] = predictions
 
+        errors[name] = {}
+        #calculate error
+        for i in range(len(class_labels)):
+            this_class_instances = test_set[test_set[predicting_feature_as_int_column] == i]
+            error_qtt = (this_class_instances[predicting_feature_as_int_column] != this_class_instances[name+".prediction"]).sum()
+            performance = 1 - (error_qtt / float(this_class_instances.shape[0]))
+            errors[name][class_labels[i]] = performance
+
+        overall_performance = float(1) - (test_set[predicting_feature_as_int_column] != predictions).sum()/float(test_set.shape[0])
+        errors[name]["overall"] = overall_performance
         #import graphviz
         #dot_data = sklearn.tree.export_graphviz(predictor, out_file=None)
         #graph = graphviz.Source(dot_data)
@@ -73,5 +79,9 @@ neural_net = ("Neural net", MLPClassifier(hidden_layer_sizes=(100,50)))
 predictors = [naive_bayes, random_forest, decision_tree, neural_net, dummy]
 
 errors = compare_predictors(predictors, csv_file_location, used_features, predicting_feature)
-for predictor in errors:
-    print("{}: {}%".format(predictor, str(errors[predictor]*100)))
+for predictor in errors.keys():
+    print("{}:".format(predictor))
+    for classification in errors[predictor].keys():
+        if classification != "overall":
+            print("\t{}: {}%".format(classification, str(errors[predictor][classification]*100)))
+    print("\n\t{}: {}%".format("overall", str(errors[predictor]["overall"]*100)))
