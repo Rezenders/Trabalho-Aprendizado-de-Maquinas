@@ -175,14 +175,15 @@ def generateTrainningSet(features_list):
     token_dict = token_dict_from_dir(trainning_path)
 
     trainning_set = []
-    features_list.append("class")
-    trainning_set.append(features_list)
     
     for key, value in token_dict.iteritems():
         tokens = tokenize(value)
         frequencies = calculateWordFrequency(features_list, tokens)
         frequencies.append(resolveTrainningCandidateClass(key))
         trainning_set.append(list(frequencies))
+
+    features_list.append("class")
+    trainning_set.insert(0, features_list)
 
     return trainning_set
 
@@ -191,14 +192,15 @@ def generateTestingSet(features_list):
     token_dict = token_dict_from_dir(test_path)
     
     testing_set = []
-    features_list.append("class")
-    testing_set.append(features_list)
 
     for key, value in token_dict.iteritems():
         tokens = tokenize(value)
         frequencies = calculateWordFrequency(features_list, tokens)
         frequencies.append(resolveTestingCandidateClass(key))
         testing_set.append(list(frequencies))
+
+    features_list.append("class")
+    testing_set.insert(0, features_list)
     
     return testing_set
 
