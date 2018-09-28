@@ -22,23 +22,28 @@ def compare_predictors(predictors, csv_file_location, used_features, predicting_
     errors = {}
     #data is a HUGE csv file where each entry is one document
     #and each column correspond to a word considered useful for classification
-    data = pd.read_csv(csv_file_location, index_col=False)
+    data = pd.read_csv(csv_file_location, index_col=False)#, dtype={"class": str })
     #this command was needed in my test dataset. It is not going to be needed
     #in the final code
-    data = data[used_features].dropna(axis=0, how='any')
+    #data = data[used_features].dropna(axis=0, how='any')
+    predicting_feature_as_int_column = predicting_feature+".value"
+    data[predicting_feature_as_int_column], class_labels = pd.factorize(data[predicting_feature], sort=True)
+
     train_set, test_set = train_test_split(data, test_size=0.3, random_state=int(time.time()))
 
     for name, predictor in predictors:
 
         predictor.fit(
             train_set[used_features].values,
-            train_set[predicting_feature]
+            train_set[predicting_feature_as_int_column]
         )
 
         predictions = predictor.predict(test_set[used_features])
 
         #calculate error
-        performance = float(1) - (test_set[predicting_feature] != predictions).sum()/float(test_set.shape[0])
+        #for i in range(len(class_labels)):
+        #test_set[test_set[predicting_feature_as_int_column] == i]
+        performance = float(1) - (test_set[predicting_feature_as_int_column] != predictions).sum()/float(test_set.shape[0])
         errors[name] = performance
 
         #import graphviz
