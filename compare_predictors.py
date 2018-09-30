@@ -5,8 +5,11 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.dummy import DummyRegressor
+from sklearn.dummy import DummyClassifier
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
 import sklearn
 
@@ -17,12 +20,16 @@ import sklearn
 #   that are going to be used for classification
 #@param prediction_feature the name of hte feature that is going to be predicted
 #@returns dictionary with entries (predictor_name, performance)
+
+
+
 def compare_predictors(predictors, csv_file_location, used_features, predicting_feature):
 
     errors = {}
     #data is a HUGE csv file where each entry is one document
     #and each column correspond to a word considered useful for classification
     data = pd.read_csv(csv_file_location, index_col=False)#, dtype={"class": str })
+    #data = pd.read_csv(csv_file_location, index_col=True)#, dtype={"class": str })
     #this command was needed in my test dataset. It is not going to be needed
     #in the final code
     #data = data[used_features].dropna(axis=0, how='any')
@@ -33,10 +40,12 @@ def compare_predictors(predictors, csv_file_location, used_features, predicting_
 
     for name, predictor in predictors:
 
+        print("name: ", name, " predictor ", predictor)
         predictor.fit(
             train_set[used_features].values,
             train_set[predicting_feature_as_int_column]
         )
+        
 
         predictions = predictor.predict(test_set[used_features])
 
@@ -52,10 +61,12 @@ def compare_predictors(predictors, csv_file_location, used_features, predicting_
 
         overall_performance = float(1) - (test_set[predicting_feature_as_int_column] != predictions).sum()/float(test_set.shape[0])
         errors[name]["overall"] = overall_performance
-        #import graphviz
-        #dot_data = sklearn.tree.export_graphviz(predictor, out_file=None)
-        #graph = graphviz.Source(dot_data)
-        #graph.render()
+        
+        if(name == "Decision tree"):
+            import graphviz
+            dot_data = sklearn.tree.export_graphviz(predictor, out_file=None)
+            graph = graphviz.Source(dot_data)
+            graph.render()
 
     return errors
 
@@ -71,12 +82,18 @@ predicting_feature = used_features[-1]
 used_features.remove(predicting_feature)
 
 naive_bayes = ("Naive bayes", GaussianNB())
-random_forest = ("Random forest", RandomForestRegressor())
-dummy = ("Dummy", DummyRegressor())
-decision_tree = ("Decision tree", DecisionTreeRegressor())
+#random_forest = ("Random forest", RandomForestRegressor())
+random_forest = ("Random forest", RandomForestClassifier())
+#dummy = ("Dummy", DummyRegressor())
+dummy = ("Dummy", DummyClassifier())
+#decision_tree = ("Decision tree", DecisionTreeRegressor())
+decision_tree = ("Decision tree", DecisionTreeClassifier())
 neural_net = ("Neural net", MLPClassifier(hidden_layer_sizes=(100,50)))
 
 predictors = [naive_bayes, random_forest, decision_tree, neural_net, dummy]
+
+dataDebug = pd.read_csv(csv_file_location, index_col=False)#, dtype={"class": str })
+dataDebugView = dataDebug.iloc[:,182] # first column of data frame 
 
 errors = compare_predictors(predictors, csv_file_location, used_features, predicting_feature)
 for predictor in errors.keys():
