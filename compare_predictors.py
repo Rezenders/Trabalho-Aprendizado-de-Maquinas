@@ -39,7 +39,8 @@ def compare_predictors(predictors, csv_file_location, used_features, predicting_
     train_set, test_set = train_test_split(data, test_size=0.3, random_state=int(time.time()))
 
     for name, predictor in predictors:
-
+        train_set[used_features].values
+        
         print("name: ", name, " predictor ", predictor)
         predictor.fit(
             train_set[used_features].values,
@@ -64,7 +65,7 @@ def compare_predictors(predictors, csv_file_location, used_features, predicting_
         
         if(name == "Decision tree"):
             import graphviz
-            dot_data = sklearn.tree.export_graphviz(predictor, out_file=None)
+            dot_data = sklearn.tree.export_graphviz(predictor, out_file=None, feature_names = used_features)
             graph = graphviz.Source(dot_data)
             graph.render()
 
@@ -72,11 +73,16 @@ def compare_predictors(predictors, csv_file_location, used_features, predicting_
 
 
 ########test############
+csv_file_raw = './allData.csv'
+df = pd.read_csv(csv_file_raw, index_col=False)
+dropado = df.drop(['ha','ta'], axis=1)
+dropado.to_csv('./allDataReduced.csv', index=False)
 
-csv_file_location = './allData.csv'
+csv_file_location = './allDataReduced.csv'
 #get the used features from the first line of the csv
 #removing the last character because it is \n
 used_features = open(csv_file_location).readlines()[0][:-1].split(',')
+
 #the feature we are predicting should be the last one listed
 predicting_feature = used_features[-1]
 used_features.remove(predicting_feature)
@@ -88,12 +94,17 @@ random_forest = ("Random forest", RandomForestClassifier())
 dummy = ("Dummy", DummyClassifier())
 #decision_tree = ("Decision tree", DecisionTreeRegressor())
 decision_tree = ("Decision tree", DecisionTreeClassifier())
-neural_net = ("Neural net", MLPClassifier(hidden_layer_sizes=(100,50)))
+neural_net = ("Neural net", MLPClassifier(hidden_layer_sizes=(100,50), max_iter=5000))
 
 predictors = [naive_bayes, random_forest, decision_tree, neural_net, dummy]
 
 dataDebug = pd.read_csv(csv_file_location, index_col=False)#, dtype={"class": str })
-dataDebugView = dataDebug.iloc[:,182] # first column of data frame 
+#dataDebugView = dataDebug.iloc[:,182] # first column of data frame 
+
+dataDebugViewLine = dataDebug.iloc[0] # first column of data frame 
+
+classes = dataDebug.classification.unique()
+print("Classes: ", classes)
 
 errors = compare_predictors(predictors, csv_file_location, used_features, predicting_feature)
 for predictor in errors.keys():
