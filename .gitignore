@@ -1,6 +1,6 @@
 
 # Created by https://www.gitignore.io/api/vim,linux,python,windows,eclipse
-
+*.csv
 ### Eclipse ###
 
 .metadata

@@ -117,7 +117,7 @@ def select_best_features(tfidf_matrix, feature_names, classBounds):
 
         # Odena o Dicionario por TF*IDF
         d = OrderedDict(sorted(featureDict.items(), key=itemgetter(1), reverse=True))
-        d = OrderedDict(islice(d.iteritems(),0,50))
+        d = OrderedDict(islice(d.iteritems(),0,30))
 
         # Atualiza o dicionario com os n primeiros termos calculados.
         for key, value in d.iteritems():
@@ -175,14 +175,14 @@ def generateTrainningSet(features_list):
     token_dict = token_dict_from_dir(trainning_path)
 
     trainning_set = []
-    
+
     for key, value in token_dict.iteritems():
         tokens = tokenize(value)
         frequencies = calculateWordFrequency(features_list, tokens)
         frequencies.append(resolveTrainningCandidateClass(key))
         trainning_set.append(list(frequencies))
 
-    features_list.append("class")
+    features_list.append("classification")
     trainning_set.insert(0, features_list)
 
     return trainning_set
@@ -190,7 +190,7 @@ def generateTrainningSet(features_list):
 def generateTestingSet(features_list):
     test_path = "./classifierSets/test"
     token_dict = token_dict_from_dir(test_path)
-    
+
     testing_set = []
 
     for key, value in token_dict.iteritems():
@@ -199,11 +199,41 @@ def generateTestingSet(features_list):
         frequencies.append(resolveTestingCandidateClass(key))
         testing_set.append(list(frequencies))
 
-    features_list.append("class")
+    features_list.append("classification")
     testing_set.insert(0, features_list)
-    
+
     return testing_set
 
+def generateAllDataSet(features_list):
+    trainning_path = "./classifierSets/trainning"
+    token_dict = token_dict_from_dir(trainning_path)
+
+
+    trainning_set = []
+
+    for key, value in token_dict.iteritems():
+        tokens = tokenize(value)
+        frequencies = calculateWordFrequency(features_list, tokens)
+        frequencies.append(resolveTrainningCandidateClass(key))
+        trainning_set.append(list(frequencies))
+
+
+    test_path = "./classifierSets/test"
+    token_dict = token_dict_from_dir(test_path)
+
+    testing_set = []
+
+    for key, value in token_dict.iteritems():
+        tokens = tokenize(value)
+        frequencies = calculateWordFrequency(features_list, tokens)
+        frequencies.append(resolveTestingCandidateClass(key))
+        testing_set.append(list(frequencies))
+
+    all_data_set = trainning_set + testing_set
+    features_list.append("classification")
+    all_data_set.insert(0, features_list)
+
+    return all_data_set
 
 def generateCsv(fileName, data):
     csv_file = open(fileName, "w")
@@ -272,13 +302,16 @@ def main():
 
     print "Total de Features: ", len(features_set)
 
-    #Cria um CSV com os dados para treino
-    trainning_set = generateTrainningSet(list(features_set))
-    generateCsv("trainningSet.csv", trainning_set)
+    # #Cria um CSV com os dados para treino
+    # trainning_set = generateTrainningSet(list(features_set))
+    # generateCsv("trainningSet.csv", trainning_set)
+    #
+    # #Cria um CSV com os dados de test
+    # testing_set = generateTestingSet(list(features_set))
+    # generateCsv("testingSet.csv", testing_set)
 
-    #Cria um CSV com os dados de test
-    testing_set = generateTestingSet(list(features_set))
-    generateCsv("testingSet.csv", testing_set)
+    all_data_set = generateAllDataSet(list(features_set))
+    generateCsv("allData.csv", all_data_set)
 
 if __name__ == "__main__":
     main()
