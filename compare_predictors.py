@@ -111,6 +111,7 @@ predicting_feature = used_features[-1]
 used_features.remove(predicting_feature)
 
 naive_bayes = ("Naive bayes", GaussianNB())
+multinomial_naive = ("Multinomial Naive", MultinomialNB())
 #random_forest = ("Random forest", RandomForestRegressor())
 random_forest = ("Random forest", RandomForestClassifier())
 #dummy = ("Dummy", DummyRegressor())
@@ -119,7 +120,7 @@ dummy = ("Dummy", DummyClassifier())
 decision_tree = ("Decision tree", DecisionTreeClassifier())
 neural_net = ("Neural net", MLPClassifier(hidden_layer_sizes=(100,100,50), max_iter=5000, early_stopping=True))
 
-predictors = [naive_bayes, random_forest, decision_tree, neural_net, dummy]
+predictors = [naive_bayes, multinomial_naive, random_forest, decision_tree, neural_net, dummy]
 
 dataDebug = pd.read_csv(csv_file_location, index_col=False)#, dtype={"class": str })
 #dataDebugView = dataDebug.iloc[:,182] # first column of data frame
